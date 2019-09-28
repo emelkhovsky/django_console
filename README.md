@@ -5,7 +5,7 @@ It includes these subpages:
 * authorization
 * linux-console
 
-It has block using library ***paramiko*** for connecting to server. 
+It has block using library ***paramiko*** for connecting to server. It shows commands, answers and error messages.
 
 There are some examples:
 
