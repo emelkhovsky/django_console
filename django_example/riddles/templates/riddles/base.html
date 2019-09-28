@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel = "shortcut icon" href = "{% static 'images/gory.png'%}" type = "image/png">
+    <title>{%block title%} {{title_name}} {%endblock%}</title>
+    {%load static%}<link type = text/css rel="stylesheet" href = "{% static 'base.css'%}">
+</head>
+<body>
+
+
+<div id = 'polosa'>
+    {%if name_flag is not None%}
+        <form action = '' method = 'POST'>
+            {%csrf_token%}
+            <input type = submit name = "logout" value="Log out" class = "fonts_fix" id = "log_out_submit">
+        </form>
+    {%endif%}
+    <form action = '/console/' method = 'POST'>
+        {%csrf_token%}
+        <div id = "ip_form">
+            <p>{{ipform.ip_ip}}</p>
+            <p>{{ipform.ip_user}}</p>
+            <p>{{ipform.ip_password}}</p>
+        </div>
+        <input type = submit name = 'start' value = 'Start' id = "start_submit" class = "fonts_fix">
+    </form>
+    <div id = "messages">
+        Hello, {{name}}!<br>
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+</div>
+
+
+<form action = '/reg/'>
+    <button id = "to_reg_from_main" class = "fonts_fix">Registration</button>
+</form>
+<form action = '/'>
+    <button id = "to_log_from_main" class = "fonts_fix">Log in</button>
+</form>
+
+
+
+{%block body%}{%endblock%}
+
+</body>
+</html>

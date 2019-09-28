@@ -1,0 +1,244 @@
+body{
+    background:url(images/fon.png) !important;
+    margin:0px;
+    font-family:Raleway;
+    font-size:17px;
+    font-weight:700;
+}
+/*для ip формы*/
+#polosa{
+    position:fixed;
+    width:350px;
+    height:100%;
+    background:#523893;
+    color:#33b1c7;
+    box-shadow: 15px 0px 15px -5px rgba(0,0,0,0.39);
+}
+#start_submit{
+    position:fixed;
+    left:127px;
+    top:407px;
+    background:#33b1c7;
+    color:white;
+    width:80px;
+    height:30px;
+    border:none;
+}
+#ip_form{
+    position:fixed;
+    left:40px;
+    top:247px;
+}
+#ip_1{
+    width:260px;
+    height:25px;
+}
+#ip_2{
+    width:260px;
+    height:25px;
+}
+#ip_3{
+    width:260px;
+    height:25px;
+}
+#ip_4{
+    width:260px;
+    height:25px;
+}
+/*для формы входа*/
+#log_form_block{
+    position:fixed;
+    left:700px;
+    top:200px;
+    width:400px;
+    height:250px;
+    background:#523893;
+    color:#33b1c7;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+#log_form{
+    position:fixed;
+    left:770px;
+    top:260px;
+}
+#log_1{
+    width:260px;
+    height:25px;
+}
+#log_2{
+    width:260px;
+    height:25px;
+}
+#login_submit{
+    position:fixed;
+    left:953px;
+    top:370px;
+    background:#33b1c7;
+    color:white;
+    width:80px;
+    height:30px;
+    border:none;
+}
+#to_reg_from_log_button{
+    position:fixed;
+    left:770px;
+    top:370px;
+    background:#a8a8a8;
+    color:white;
+    width:166px;
+    height:30px;
+    text-decoration: none;
+    border:none;
+}
+#log_head{
+    position:fixed;
+    left:855px;
+    top:225px;
+    font-size:30px;
+    font-weight:900;
+}
+/*кнопка выхода*/
+#log_out_submit{
+    position:fixed;
+    left:225px;
+    top:20px;
+    background:#33b1c7;
+    color:white;
+    width:78px;
+    height:30px;
+    border:none;
+}
+/*регистрация*/
+#reg_form_block{
+    position:fixed;
+    left:700px;
+    top:200px;
+    width:400px;
+    height:280px;
+    background:#523893;
+    color:#33b1c7;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+#reg_form{
+    position:fixed;
+    left:770px;
+    top:260px;
+}
+#reg_1{
+    width:260px;
+    height:25px;
+}
+#reg_2{
+    width:260px;
+    height:25px;
+}
+#reg_3{
+    width:260px;
+    height:25px;
+}
+#reg_submit{
+    position:fixed;
+    left:915px;
+    top:420px;
+    background:#33b1c7;
+    color:white;
+    width:120px;
+    height:30px;
+    border:none;
+}
+#reg_head{
+    position:fixed;
+    left:845px;
+    top:225px;
+    font-size:30px;
+    font-weight:900;
+}
+.fonts_fix{
+    font-family:Raleway;
+    font-size:15px;
+    font-weight:700;
+}
+/*сообщения и ошибки*/
+#messages{
+    position:fixed;
+    width:150px;
+    top:20px;
+    left:40px;
+}
+/*кнопки перехода на регистрацию и вход*/
+#to_reg_from_main{
+    position:fixed;
+    left:40px;
+    bottom:20px;
+    background:#a8a8a8;
+    color:white;
+    width:166px;
+    height:30px;
+    text-decoration: none;
+    border:none;
+}
+#to_log_from_main{
+    position:fixed;
+    left:223px;
+    bottom:20px;
+    background:#33b1c7;
+    color:white;
+    width:80px;
+    height:30px;
+    border:none;
+}
+/*console*/
+#console_blackblock{
+    position:fixed;
+    left:450px;
+    top:100px;
+    width:1000px;
+    height:600px;
+    background:black;
+    border-style: solid;
+    border-color:#523893;
+}
+#command_input{
+    position:fixed;
+    background:black;
+    border-style: solid;
+    border-color:#523893;
+    width:1000px;
+    height:30px;
+    top:670px;
+    left:450px;
+    color:#33b1c7;
+}
+#console_output{
+    position:fixed;
+    left:450px;
+    top:100px;
+    width:1000px;
+    height:570px;
+    color:#33b1c7;
+    border-style: solid;
+    border-color:#523893;
+    overflow:scroll;
+
+    scrollbar-face-color:#33b1c7;
+    scrollbar-shadow-color: #ffffff;
+    scrollbar-highlight-color: #ffffff;
+    scrollbar-3dlight-color: #5997CA;
+    scrollbar-darkshadow-color: #5997CA;
+    scrollbar-track-color:black;
+    scrollbar-arrow-color:#33b1c7;
+}
+
+
+
+#console_blackblock #console_ouput p #comand{
+    color:green;
+}
+
+/*шрифты*/
+@font-face{
+    font-family:'Raleway';
+    src:url(fonts/Raleway-Thin.ttf) format('truetype');
+    font-style: normal;
+    font-weight: normal;
+}

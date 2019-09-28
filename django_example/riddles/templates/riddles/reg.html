@@ -1,0 +1,16 @@
+{%extends "riddles/base.html"%}
+
+{%block body%}
+<div id = "reg_form_block">
+    <div id = "reg_head">Register</div>
+    <form action = '/reg/' method = 'POST'>
+        {%csrf_token%}
+        <div id = "reg_form">
+            <p>{{regform.login}}</p>
+            <p>{{regform.password}}</p>
+            <p>{{regform.email}}</p>
+        </div>
+        <input type = submit value = 'Register' id = "reg_submit" class = "fonts_fix">
+    </form>
+</div>
+{%endblock%}
