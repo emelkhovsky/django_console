@@ -1,0 +1,96 @@
+{%include "riddles/base.html"%}
+
+{%block navbar%}
+
+<div id = 'polosa'>
+    <div class = "logo">LEARN <div class = "logo_linux_word">LINUX</div> CONSOLE</div>
+    <img src="../static/images/logo_picture.png" class="logo_picture" alt="">
+    <span id="close_button_span" class="close_button_span_style">
+        <img src="../static/images/close_button.png" class="close_button" alt="">
+    </span>
+    <div class = "menu_buttons">
+        <div id = "nav_main" class = "menu_button">Main</div>
+        <div id = "nav_lessson1" class = "menu_button">Lesson 1 - Introduction</div>
+        <div id = "nav_lessson2" class = "menu_button">Lesson 2 - File control</div>
+        <div id = "nav_lessson3" class = "menu_button">Lesson 3 - Navigation</div>
+        <div id = "nav_lessson4" class = "menu_button">Lesson 4 - Processes</div>
+        <div id = "nav_lessson5" class = "menu_button">Lesson 5 - Text</div>
+        <div id = "nav_lessson6" class = "menu_button">Lesson 6 - Environment</div>
+        <div id = "nav_progress" class = "menu_button">Progress</div>
+    </div>
+    <div class = "buttons_menu_with_action">
+        <form action = '/'>
+            <button class = "button_menu_with_action"></button>
+        </form>
+        <form action = '/lesson1/'>
+            <button class = "button_menu_with_action"></button>
+        </form>
+        <form action = '/lesson2/'>
+            <button class = "button_menu_with_action"></button>
+        </form>
+        <form action = '/lesson3/'>
+            <button class = "button_menu_with_action"></button>
+        </form>
+        <form action = '/lesson4/'>
+            <button class = "button_menu_with_action"></button>
+        </form>
+        <form action = '/lesson5/'>
+            <button class = "button_menu_with_action"></button>
+        </form>
+        <form action = '/lesson6/'>
+            <button class = "button_menu_with_action"></button>
+        </form>
+        <form action = '/progress/'>
+            <button class = "button_menu_with_action"></button>
+        </form>
+
+    </div>
+
+    {%if name_flag is None%}
+    <form action = '/reg/'>
+        <button id = "to_reg_from_main" class = "fonts_fix">Registration</button>
+    </form>
+    <form action = '/login/'>
+        <button id = "to_log_from_main" class = "fonts_fix">Log in</button>
+    </form>
+    {%endif%}
+    {%if name_flag is not None%}
+
+        <form action = '/' method = 'POST'>
+            {%csrf_token%}
+            <input type = submit name = "logout" value="Log out" class = "fonts_fix" id = "log_out_submit">
+        </form>
+    {%endif%}
+    <div id = "messages">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+
+
+</div>
+
+
+<div id="dop_polosa">
+    <span id="open_button_span" class="open_button_span_style">
+        <img src="../static/images/open_menu_button.png" class="open_button" alt="">
+    </span>
+</div>
+
+
+
+<!-- скрытие основного меню при нажатие крестика и открытие через полосу слева-->
+<script>
+    document.getElementById('close_button_span').onclick = function() {
+        document.getElementById('polosa').style.display = 'none';
+        document.getElementById('dop_polosa').style.display = 'block';
+    }
+    document.getElementById('open_button_span').onclick = function() {
+        document.getElementById('dop_polosa').style.display = 'none';
+        document.getElementById('polosa').style.display = 'block';
+    }
+</script>
+
+{%endblock%}
+
+{%block body%}{%endblock%}

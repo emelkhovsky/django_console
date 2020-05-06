@@ -1,0 +1,85 @@
+{%include "riddles/navbar.html"%}
+
+
+{%block body%}
+
+    <img src="../static/images/lesson_block.png" class="lesson_block" alt="">
+    <img src="../static/images/left_button.png" class="left_button" alt="">
+    <img src="../static/images/right_button.png" class="right_button" alt="">
+
+    <div id = "console_blackblock">
+        <div id = 'console_output'>
+            {%for comand in all_console%}
+                <div class="output_command_p">{{comand}}</div>
+                <br>
+            {%endfor%}
+        </div>
+        <form  method = 'POST' id="console_form">
+            {%csrf_token%}
+            <div id="command_input">
+                {{ inputform.input_line }}
+            </div>
+
+            <input type = submit name="command_input_submit" class="enter_submit" id = 'enter_submit_id'>
+        </form>
+    </div>
+
+
+<script>
+
+
+
+window.onload = function(){
+    var button_back = document.querySelector(".left_button");
+    var button_next = document.querySelector(".right_button");
+    var blocks = document.querySelectorAll(".lesson div")
+    var index = 0;
+    button_back.addEventListener("click", function(){
+        blocks[index].style.display = "none";
+        index--;
+        if(index < 0){
+            index = blocks.length - 1;
+        }
+        blocks[index].style.display = "block";
+    });
+    button_next.addEventListener("click", function(){
+        blocks[index].style.display = "none";
+        index++;
+        if(index == blocks.length){
+            index = 0;
+        }
+        blocks[index].style.display = "block";
+    });
+}
+
+function create_post() {
+        console.log("create post is working!");
+        var str = $("#console_form").serialize();
+        console.log(str);
+        $.ajax({
+            url: "create_post/",
+            type: "POST",
+            data: {command_input: str},
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+            success: function(json){
+                $("#console_form").trigger('reset');
+                $('#console_output').append('<br><br>');
+                $('#console_output').append(json[json.length - 2]);
+                $('#console_output').append('<br><br>');
+                $('#console_output').append(json[json.length - 1]);
+                console.log("success");
+            },
+            error: function (response) {
+                alert("bad");
+            }
+        })
+    };
+
+    $("#console_form").on("submit", function (event) {
+        event.preventDefault();
+        console.log("form submitted!");
+        create_post();
+    })
+</script>
+
+{%endblock%}

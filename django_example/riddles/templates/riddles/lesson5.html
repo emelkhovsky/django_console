@@ -1,0 +1,95 @@
+{%include "riddles/base_for_lessons.html"%}
+
+
+{%block body%}
+<div class="lesson_head">Lesson 5 - Text</div>
+<div class="lesson">
+    <div>
+        В этом уроке мы вас научим командам для работы с текстом. Для этого создайте файл <span class="highlighted_text">filetext.txt</span>,
+        <span class="highlighted_text">filetext2.txt</span> и запишите в них несколько одинаковых строчек текста(кроме одной).
+        <h2><span class="code_text">#head/tail</span></h2>
+        Команда <span class="highlighted_text">head</span> выводит несколько первых строк из файла (голова), а <span class="highlighted_text">tail</span> выдает несколько последних строк (хвост).
+
+    </div>
+    <div>
+        По умолчанию каждая утилита выводит десять строк. Но это можно изменить с помощью опции <span class="highlighted_text">-n</span>.<br><br>
+        Ещё один полезный параметр <span class="highlighted_text">-f</span>, это сокращение от follow (следовать). Утилита постоянно выводит изменения в файле на экран.
+        Например, если вы хотите, чтобы лог (журнал) файла отображался в режиме реального времени используйте команду «<span class="highlighted_text">tail -nf</span>».
+    </div>
+    <div>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">head -n 1 filetext.txt</span><br><br>
+        Вы увидите первую строчку вашего файла.
+    </div>
+    <div>
+        <h2><span class="code_text">#sort</span></h2>
+        Команда выполняет сортировку текстовой информации по заданным показателям. Дополнительные переменные позволяют:<br><br>
+        <span class="highlighted_text">-n</span> - сортировать строки текста по числовому значению;<br><br>
+        <span class="highlighted_text">-du</span> - по размеру;<br><br>
+    </div>
+    <div>
+        <span class="highlighted_text">-r</span> - применять обратную сортировку;<br><br>
+        <span class="highlighted_text">-u</span> - удалять дубликаты при сортировке;<br><br>
+        Вот несколько принципов, по которым команда sort сортирует строки:<br><br>
+        -Строки с цифрами размещаются выше других строк<br><br>
+        -Строки, начинающиеся с букв нижнего регистра размещаются выше<br><br>
+    </div>
+    <div>
+        -Сортировка выполняется в соответствии алфавиту<br><br>
+        -Строки сначала сортируются по алфавиту, а уже вторично по другим правилам<br><br>
+        Попробуйте вывывести текст вашего файла с помощью команды <span class="highlighted_text">cat</span>.<br><br>
+    </div>
+    <div>
+        А теперь давайте введем команду:<br><br>
+        <span class="code_text">sort filetext.txt</span><br><br>
+        Вы увидите новую, отсортированную версию вашего файла. Но будьте осторожны, сортировка НЕ меняет содержимое файла.
+    </div>
+    <div>
+        <h2><span class="code_text">#wc</span></h2>
+        Утилита командной строки Linux для анализа файла.<br><br>
+        На выходе вы получите кол-во строк, слов, символов.
+        Программа также может принимать параметры для анализа отдельных значений. Например:<br><br>
+        <span class="highlighted_text">-с</span> - отобразить размер объекта в байтах и др.
+    </div>
+    <div>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">wc filetext.txt</span><br><br>
+        Вы увидите информацию о файле.
+    </div>
+    <div>
+        <h2><span class="code_text">#diff</span></h2>
+        Данная команда производит построчное сравнение двух текстовых файлов, выводя различия между ними.
+        Причём выводятся только строки, в которых обнаружены отличия.
+        Алгоритм работы: «<span class="highlighted_text">diff файл_№1 файл_№2</span>»
+    </div>
+    <div>
+        Параметры, с которыми можно использовать команду:<br><br>
+        <span class="highlighted_text">-q</span> - выводить только отличия файлов;<br><br>
+        <span class="highlighted_text">-s</span> - выводить только совпадающие части;<br><br>
+        <span class="highlighted_text">-с</span> - выводить нужное количество строк после совпадений и др.
+    </div>
+    <div>
+        В выводе утилиты кроме, непосредственно, отображения изменений, выводит строку в
+        которой указывается, в какой строчке и что было сделано. Для этого используются такие символы:<br><br>
+        <span class="highlighted_text">a</span> - добавлена;<br><br>
+        <span class="highlighted_text">d</span> - удалена;<br><br>
+        <span class="highlighted_text">c</span> - изменена.
+    </div>
+    <div>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">diff filetext.txt filetext2.txt</span><br><br>
+        В результате, вы можете, например, увидеть:<br><br>
+        -Стрелки <span class="highlighted_text"><</span> и <span class="highlighted_text">></span>, где < указывает принадлежность строки, стоящей после стрелочки к 1ому файлу, а > - ко 2ому.<br><br>
+    </div>
+    <div>
+        -Некоторые параметры, указывающие на различия в файлах(например 1,3d0 обозначает, что строки с первой по третью должны быть удалены из начала первого файла, чтобы получился 2ой файл)
+    </div>
+    <div>
+        <form  method = 'POST' id="finish_lessons">
+            {%csrf_token%}
+            <input type = submit class="finish_lessons_button_style" name="hh" value="Закончить урок">
+        </form>
+    </div>
+</div>
+
+{%endblock%}

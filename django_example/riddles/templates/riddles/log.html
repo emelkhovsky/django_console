@@ -1,10 +1,10 @@
-{%extends "riddles/base.html"%}
+{%extends "riddles/navbar.html"%}
 
 {%block body%}
     {%if name_flag is None%}
-        <div id = "log_form_block">
+        <img src="../static/images/fon_block_log_in.png" class="log_in_form_block" alt="">
             <div id = "log_head">Log in</div>
-            <form action = '' method = 'POST'>
+            <form action = '/login/' method = 'POST'>
                 <div id = "log_form">
                     {%csrf_token%}
                     <p>{{logform.log_login}}</p>
@@ -12,9 +12,6 @@
                 </div>
                 <input type = submit value = 'Log in' id = "login_submit" class = "fonts_fix">
             </form>
-            <form action="/reg/">
-                <button id = "to_reg_from_log_button" class = "fonts_fix">Registration</button>
-            </form>
-        </div>
+
     {%endif%}
 {%endblock%}

@@ -1,0 +1,59 @@
+{%extends "riddles/navbar.html"%}
+
+
+{%block body%}
+<img src="../static/images/progress_score_block.png" class="progress_score_block" alt="">
+<img src="../static/images/progress_info_block.png" class="progress_info_block" alt="">
+<img src="../static/images/progress_your_progress_block.png" class="progress_your_progress_block" alt="">
+
+<div class="progress_block_1">
+    <div class="progress_main_text" id="your_score_main_text">Your score</div>
+    <div id="score_value">{{score_value}}</div>
+    <div class="progress_main_text" id="rating_main_text">Rating</div>
+    <div class="raiting_list_names">
+        <div class="r_l_n">{{first_raiting_username}}</div>
+        <div class="r_l_n">{{second_raiting_username}}</div>
+        <div class="r_l_n">{{third_raiting_username}}</div>
+    </div>
+    <div class="raiting_list_score">
+        <div class="r_l_n">{{first_raiting_score}}</div>
+        <div class="r_l_n">{{second_raiting_score}}</div>
+        <div class="r_l_n">{{third_raiting_score}}</div>
+    </div>
+</div>
+
+
+
+<div class="progress_block_2">
+    <div class="progress_main_text" id="scoring_information_main_text">Scoring information</div>
+    <div class="info_list_text">
+        <div class="l_info">one lesson completed </div>
+        <div class="l_info">correct command</div>
+        <div class="l_info">wrong command</div>
+        <div class="l_info">course completed</div>
+    </div>
+    <div class="info_list_points">
+        <div class="l_infop">+ 100</div>
+        <div class="l_infop">+ 10</div>
+        <div class="l_infop">- 10</div>
+        <div class="l_infop">+ 500</div>
+    </div>
+</div>
+
+
+
+<div class="progress_block_3">
+    <div class="progress_main_text" id="your_progress_main_text">Your progress</div>
+    <div id="list_your_progress">
+        <div id="course_text" class="list_progr">course</div>
+        <div id="per_corrext_answers_text" class="list_progr">percent of correct answers</div>
+        <div class="list_progr">{{kol_lessons_value}}/6 lessons</div>
+    </div>
+    <div id="list_your_progress_per" >
+        <div id="course_per" class="list_progr">{{course_percent}}%</div>
+        <div id="per_corrext_answers_per" class="list_progr">{{percent}}%</div>
+    </div>
+
+</div>
+
+{%endblock%}

@@ -1,93 +1,157 @@
-from django.shortcuts import render, redirect
-from .forms import reg_form,log_form, ip_form
+from django.shortcuts import render
+from .forms import reg_form,log_form, input_form
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib import messages
-from riddles.models import Ipdata_model
+from django.http import HttpResponseRedirect
 import paramiko
+from django.http import HttpResponse
+import json
+import time
+from riddles.models import Progress_model
+
+all_console = []
+ban_commands = {'cd ~', 'cd', 'cd /', 'cd /root', 'cd /home', 'su -', 'useradd', 'userdel', 'usermod', 'passwd', 'sudo'}#список запрещенных команд
+ip = ''
+name_from_ip = 'root'
+password = ''
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.connect(hostname=ip, username=name_from_ip, password=password)
+channel = ssh.invoke_shell()
 
 
-def log(request, logform):
+def log_processing(request, logform):
     login = logform.cleaned_data['log_login']
     password = logform.cleaned_data['log_password']
     user = authenticate(username=login, password=password)
     if user is not None:
         request.session['username'] = login
+        create_without_output('cd ~ ')
+        create_without_output('cd ' + login)
         messages.error(request, 'Вы успешно вошли!')
     else:
         messages.error(request, 'Неправильный логин или пароль!')
 
-def ip_(request, ipform):
-    if 'username' not in request.session:
-        messages.error(request, 'Сначала авторизируйтесь!')
-    else:
-        name = ipform.cleaned_data['ip_user']
-        password = ipform.cleaned_data['ip_password']
-        ip = ipform.cleaned_data['ip_ip']
-        return render(request, 'riddles/console.html')
 
-def log_out(request):
+def log_out(request):#выход из учетной записи
     request.session.flush()
+    ssh.close()
+    all_console.clear()
     return None
 
-def name_function(request):
+def name_function(request):#смотрим имя человека
     name = 'Anonymus'
     if 'username' in request.session:
         name = request.session['username']
     return name
 
-def name_flag_function(request):
+def name_flag_function(request):#определяем авторизирован человек или нет, возвращаем флажок
     name_flag = None
     if 'username' in request.session:
         name_flag = 1
     return name_flag
+
+def login(request):
+    logform = log_form()
+
+    if request.method == 'POST':
+        logform = log_form(request.POST)
+        if logform.is_valid():
+            print('logvalid')
+            log_processing(request, logform)
+
+    context = {
+        'logform': logform,
+        'name': None,
+        'title_name': 'login',
+        'name_flag': None,
+    }
+    return render(request, 'riddles/log.html', context)
 
 def main(request):
     name = name_function(request)
     name_flag = name_flag_function(request)
 
     logform = log_form()
-    ipform = ip_form()
 
     if request.method == 'POST':
+        print('опа')
         logform = log_form(request.POST)
-        ipform = ip_form(request.POST)
         if logform.is_valid():
-            log(request, logform)
+            log_processing(request, logform)
             name = name_function(request)
             name_flag = name_flag_function(request)
-        elif ipform.is_valid():
-            ip_(request, ipform)
         else:
             name_flag = log_out(request)
             name = name_function(request)
-
     context = {
         'logform': logform,
-        'ipform': ipform,
         'name': name,
-        'title_name': main,
+        'title_name': 'main',
         'name_flag': name_flag,
     }
-    return render(request, 'riddles/log.html', context)
+    return render(request, 'riddles/main.html', context)
+
+
+def progress(request):#отображение страницы прогресса
+    name = name_function(request)
+    name_flag = name_flag_function(request)
+
+    progressmodel_dict = Progress_model.objects.filter(username=name).values()[0]
+    score_value = progressmodel_dict['score']
+    all_answers_value = progressmodel_dict['all_answers']
+    good_answers_value = progressmodel_dict['good_answers']
+    kol_lessons_value = progressmodel_dict['kol_lessons']
+    course_percent = int(kol_lessons_value / 6 * 100)
+    print(course_percent)
+    percent = int(good_answers_value / all_answers_value) * 100
+    progressmodel = Progress_model.objects.all().order_by('-score')
+    progressmodel = progressmodel[:3].values()
+    first_raiting_score = progressmodel[0]['score']
+    second_raiting_score = progressmodel[1]['score']
+    third_raiting_score = progressmodel[2]['score']
+    first_raiting_username = progressmodel[0]['username']
+    second_raiting_username = progressmodel[1]['username']
+    third_raiting_username = progressmodel[2]['username']
+    context = {
+        'name': name,
+        'title_name': 'progress',
+        'name_flag': name_flag,
+        'score_value': score_value,
+        'percent': percent,
+        'first_raiting_score': first_raiting_score,
+        'second_raiting_score': second_raiting_score,
+        'third_raiting_score': third_raiting_score,
+        'first_raiting_username': first_raiting_username,
+        'second_raiting_username': second_raiting_username,
+        'third_raiting_username': third_raiting_username,
+        'kol_lessons_value': kol_lessons_value,
+        'course_percent': course_percent,
+    }
+    return render(request, 'riddles/progress.html', context)
 
 def reg_processing(request, regform):
     login = regform.cleaned_data['login']
     password = regform.cleaned_data['password']
     email = regform.cleaned_data['email']
-    user = User.objects.create_user(username = login, email = email, password = password)
-    user.save()
-    ipdata = Ipdata_model(ip_username = login)
-    ipdata.save()
-    messages.error(request, 'Вы успешно зарегистрировались!')
+    try:
+        user = User.objects.create_user(username=login, email=email, password=password)
+        user.save()
+        progressmodel = Progress_model(username=login, score=0, kol_lessons=0, all_answers=0, good_answers=0)
+        progressmodel.save()
+        create_without_output('cd ~ ')
+        create_without_output('mkdir ' + login)
+        messages.error(request, 'Вы успешно зарегистрировались!')
+    except:
+        messages.error(request, 'Данный пользователь уже зарегистрирован, попробуйте еще раз(или проверьте корректность email)')
+
+
 
 def reg(request):
     name = name_function(request)
     name_flag = name_flag_function(request)
-
-    ipform = ip_form()
     regform = reg_form()
-
     if request.method == 'POST':
         regform = reg_form(request.POST)
         if regform.is_valid():
@@ -98,74 +162,227 @@ def reg(request):
     context = {
         'regform': regform,
         'title_name':'registration',
-        'ipform':ipform,
         'name':name,
         'name_flag':name_flag,
     }
     return render(request, 'riddles/reg.html', context)
 
-def commands_processing(ip, name_from_ip, password, command):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname = ip, username = name_from_ip, password = password)
-    stdin, stdout, stderr = ssh.exec_command(command)
-    stdout = stdout.read().decode('utf-8')
-    stderr = stderr.read().decode('utf-8')
-    return stdout, stderr
 
 
-all_console = []
-def console(request):
+#---------------------------------------------уроки----------------------------------------
+
+def ending_lesson_processing(name):#добавление баллов за прохождение урока
+    progressmodel_dict = Progress_model.objects.filter(username=name).values()[0]
+    score_value = progressmodel_dict['score']
+    kol_lessons_value = progressmodel_dict['kol_lessons']
+    if kol_lessons_value != 5:
+        kol_lessons_value += 1
+    score_value += 100
+    Progress_model.objects.filter(username=name).update(score=score_value, kol_lessons=kol_lessons_value)
+
+def lesson1(request):
+    if not name_flag_function(request):
+        return HttpResponseRedirect('/')
     name = name_function(request)
     name_flag = name_flag_function(request)
-    ipform = ip_form()
-
+    inputform = input_form()
     if request.method == 'POST':
-        if request.POST.get('logout'):
-            name_flag = log_out(request)
-            name = name_function(request)
-        if request.POST.get('start'):
-            ipform = ip_form(request.POST)
-            if ipform.is_valid():
-                ipdata = Ipdata_model.objects.get(ip_username = request.session['username'])
-                ipdata.ip_ip = ipform.cleaned_data['ip_ip']
-                ipdata.ip_user = ipform.cleaned_data['ip_user']
-                ipdata.ip_password = ipform.cleaned_data['ip_password']
-                ipdata.save()
-        if request.POST.get('command_input'):
-            command = request.POST['command_input']
-            ipdata = Ipdata_model.objects.get(ip_username = request.session['username'])
-            print(ipdata.ip_ip, ipdata.ip_user, ipdata.ip_password)
-            if ipdata.ip_ip is not None:
-                ip = ipdata.ip_ip
-                name_from_ip = ipdata.ip_user
-                password = ipdata.ip_password
-                stdout, stderr = commands_processing(ip, name_from_ip, password, command)
-                all_console.append(command)
-                all_console.append(stdout)
-                all_console.append(stderr)
-            else:
-                messages.error(request, 'Сначала подключитесь!')
-
-    if 'username' not in request.session:
-        messages.error(request, 'Сначала авторизируйтесь!')
-        logform = log_form()
-        context = {
-            'title_name': 'main',
-            'ipform':ipform,
-            'loform':logform,
-            'name': name,
-            'name_flag': name_flag,}
-        return redirect('/', context)
-
-    print(all_console)
+        if request.POST.get("hh"):
+            ending_lesson_processing(name)
+            return HttpResponseRedirect('/lesson2/')
     context = {
-        'title_name': 'console',
-        'ipform': ipform,
         'name': name,
+        'title_name': 'lesson1',
         'name_flag': name_flag,
         'all_console': all_console,
+        'inputform': inputform,
     }
-    return render(request, 'riddles/console.html', context)
+    return render(request, 'riddles/lesson1.html', context)
+
+def lesson2(request):
+    if not name_flag_function(request):
+        return HttpResponseRedirect('/')
+    name = name_function(request)
+    name_flag = name_flag_function(request)
+    inputform = input_form()
+    if request.method == 'POST':
+        if request.POST.get("hh"):
+            ending_lesson_processing(name)
+            return HttpResponseRedirect('/lesson3/')
+    context = {
+        'name': name,
+        'title_name': 'lesson2',
+        'name_flag': name_flag,
+        'all_console': all_console,
+        'inputform': inputform,
+    }
+    return render(request, 'riddles/lesson2.html', context)
+
+def lesson3(request):
+    if not name_flag_function(request):
+        return HttpResponseRedirect('/')
+    name = name_function(request)
+    name_flag = name_flag_function(request)
+    inputform = input_form()
+    if request.method == 'POST':
+        if request.POST.get("hh"):
+            ending_lesson_processing(name)
+            return HttpResponseRedirect('/lesson4/')
+    context = {
+        'name': name,
+        'title_name': 'lesson3',
+        'name_flag': name_flag,
+        'all_console': all_console,
+        'inputform': inputform,
+    }
+    return render(request, 'riddles/lesson3.html', context)
+
+def lesson4(request):
+    if not name_flag_function(request):
+        return HttpResponseRedirect('/')
+    name = name_function(request)
+    name_flag = name_flag_function(request)
+    inputform = input_form()
+    if request.method == 'POST':
+        if request.POST.get("hh"):
+            ending_lesson_processing(name)
+            return HttpResponseRedirect('/lesson5/')
+    context = {
+        'name': name,
+        'title_name': 'lesson4',
+        'name_flag': name_flag,
+        'all_console': all_console,
+        'inputform': inputform,
+    }
+    return render(request, 'riddles/lesson4.html', context)
+
+def lesson5(request):
+    if not name_flag_function(request):
+        return HttpResponseRedirect('/')
+    name = name_function(request)
+    name_flag = name_flag_function(request)
+    inputform = input_form()
+    if request.method == 'POST':
+        if request.POST.get("hh"):
+            ending_lesson_processing(name)
+            return HttpResponseRedirect('/lesson6/')
+    context = {
+        'name': name,
+        'title_name': 'lesson5',
+        'name_flag': name_flag,
+        'all_console': all_console,
+        'inputform': inputform,
+    }
+    return render(request, 'riddles/lesson5.html', context)
+
+def lesson6(request):
+    if not name_flag_function(request):
+        return HttpResponseRedirect('/')
+    name = name_function(request)
+    name_flag = name_flag_function(request)
+    inputform = input_form()
+    if request.method == 'POST':
+        if request.POST.get("hh"):
+            progressmodel_dict = Progress_model.objects.filter(username=name).values()[0]
+            score_value = progressmodel_dict['score']
+            score_value += 600#100+500
+            kol_lessons_value = progressmodel_dict['kol_lessons']
+            if kol_lessons_value != 5:
+                kol_lessons_value += 1
+            Progress_model.objects.filter(username=name).update(score=score_value, kol_lessons=kol_lessons_value)
+            return HttpResponseRedirect('/progress/')
+    context = {
+        'name': name,
+        'title_name': 'lesson6',
+        'name_flag': name_flag,
+        'all_console': all_console,
+        'inputform': inputform,
+    }
+    return render(request, 'riddles/lesson6.html', context)
+
+#--------------------------------работа с ajax запросом------------------------------------------
+
+def create_post(request):
+    print('start create_post')
+    if request.method == 'POST' and request.is_ajax:
+        if request.POST.get('command_input'):
+            console(request)
+            return HttpResponse(json.dumps(all_console), content_type="application/json")
+    else:
+        return HttpResponse(json.dumps({"nothing to see": "this isn't happening"}),content_type="application/json")
+
+#--------------------------------console------------------------------------------
+
+def create_output(command):
+    channel.send(command + '\n')
+    time.sleep(1)
+    output = channel.recv(2024).decode('utf-8')
+    ind = output.find(command)
+    ind = output.find(command, ind + 1)
+    ind_start_output = ind + len(command) + 1
+    ind_end_output = output.find('root@emelkhovsky4', ind_start_output)
+    output = output[ind_start_output: ind_end_output]
+    return str(output)
+
+def create_without_output(command):
+    channel.send(command + '\n')
+
+def console(request):
+    command = request.POST['command_input']
+    command = command[96:]
+    command = str(command).replace('%20', ' ')
+    flag = 0
+    output = ''
+    if command not in ban_commands:
+        command_list = command.split(' ')
+        for i in command_list:
+            if i in ban_commands:
+                output = 'Command is not allowed, sorry :('
+                flag = 1
+        if flag == 0:
+            if command == 'clear':#протестить!!!!!!!!
+                all_console.clear()
+            if command == 'cd ..':
+                if create_output('pwd').count('/') > 2:
+                    output = create_output(command)
+                else:
+                    output = 'Command is not allowed, sorry :('
+            elif command == 'cd ../..':
+                if create_output('pwd').count('/') > 3:
+                    output = create_output(command)
+                else:
+                    output = 'Command is not allowed, sorry :('
+            else:
+                output = create_output(command)
+            if 'https://ubuntu.com/advantage' in output:
+                output = create_output(command)
+    else:
+        output = 'Command is not allowed, sorry :('
+
+    progress_processing(request, output)
+    print(command, '|', output)
+    all_console.append(command)
+    all_console.append(output)
+
+
+def progress_processing(request, output):#обработка правильных и неправильных ответов
+    print('KEK')
+    name = name_function(request)
+    progressmodel_dict = Progress_model.objects.filter(username=name).values()[0]
+    score_value = progressmodel_dict['score']
+    all_answers_value = progressmodel_dict['all_answers']
+    good_answers_value = progressmodel_dict['good_answers']
+    all_answers_value += 1
+    if 'not found' in output:
+        score_value -= 10
+    else:
+        score_value += 10
+        good_answers_value += 1
+    print(all_answers_value, good_answers_value,score_value)
+    Progress_model.objects.filter(username=name).update(score=score_value, good_answers=good_answers_value, all_answers = all_answers_value)
+
+
+
+
 
 

@@ -1,13 +1,17 @@
 from django.db import models
 
-class Ipdata_model(models.Model):
-    ip_username = models.CharField(max_length= 50, blank=True)
-    ip_ip = models.CharField(max_length=15, blank=True)
-    ip_user = models.CharField(max_length=50, blank=True)
-    ip_password = models.CharField(max_length=50, blank=True)
+# Create your models here.
+
+
+class InputCommandsModel(models.Model):
+    input_line = models.CharField(max_length=50)
+
+class Progress_model(models.Model):
+    username = models.CharField(max_length= 50, blank=True)
+    score = models.IntegerField()
+    kol_lessons = models.IntegerField()
+    all_answers = models.IntegerField()
+    good_answers = models.IntegerField()
 
     objects = models.Manager()#иначе выдает ошибку, где в views.py пишу objects
 
-    class Meta:
-        managed = False
-        db_table = 'IP_DB'

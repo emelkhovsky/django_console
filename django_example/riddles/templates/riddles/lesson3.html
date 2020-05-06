@@ -1,0 +1,102 @@
+{%include "riddles/base_for_lessons.html"%}
+
+
+{%block body%}
+<div class="lesson_head">Lesson 3 - Navigation</div>
+<div class="lesson">
+    <div>
+        На этом уроке мы с вами познакомимся с командами Linux для <span class="highlighted_text">навигации</span><br>
+        <h2><span class="code_text">#history</span></h2>
+        Команда <span class="highlighted_text">history</span> показывает ранее введённые пользователем команды.<br><br>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">history</span><br><br>
+    </div>
+    <div>
+        <h2><span class="code_text">#clear</span></h2>
+        Команда <span class="highlighted_text">clear</span> необходима для полной очистки окна терминала.
+        Она удаляет все ранее выведенные сообщения.<br><br>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">clear</span><br><br>
+    </div>
+    <div>
+        <h2><span class="code_text">#locate</span></h2>
+        Команда <span class="highlighted_text">locate</span> используется для поиска файла в системе Linux.<br><br>
+        Эта команда полезна, когда вы не знаете, где файл сохранен или фактическое имя файла.
+        Использование аргумента <span class="highlighted_text">-i</span> с командой помогает игнорировать регистр
+        (не имеет значения, является ли он прописным или строчным).
+    </div>
+    <div>
+        Например, если вам нужен файл со словом в названии«<span class="highlighted_text">hello</span>», вы вводите «<span class="highlighted_text">locate -i hello</span>»
+        и видите список всех файлов в вашей системе Linux, содержащих слово «<span class="highlighted_text">hello</span>».<br><br>
+        Если вам необходимо найти два слова, вы можете разделить их звездочкой (*).
+        Например, чтобы найти файл, содержащий слова «<span class="highlighted_text">hello</span>» и «<span class="highlighted_text">this</span>», вы можете
+        использовать команду «<span class="highlighted_text">locate -i * hello * this</span>».
+
+    </div>
+    <div>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">locate -i filename</span><br><br>
+        Если у вас был файл «<span class="highlighted_text">filename.txt</span>», то вы увидите путь до него.
+    </div>
+
+    <div>
+        <h2><span class="code_text">#cd</span></h2>
+        Используйте эту команду, чтобы перейти из текущего каталога в указанный.<br><br>
+        Если вы просто наберете «<span class="highlighted_text">cd</span>» и нажмете кнопку Отправить, вы попадете в домашний каталог.
+        Чтобы указать другую папку для работы с файлами, нужно ввести: «<span class="highlighted_text">cd адрес_папки</span>»
+    </div>
+    <div>
+        Но есть один нюанс. Представьте, что у вас есть папка с именем «<span class="highlighted_text">Raspberry Pi</span>».
+        В этом случае, когда вы вводите «cd Raspberry Pi», оболочка примет второй аргумент
+        команды как другой, поэтому вы получите сообщение об ошибке, говорящее о том, что каталог не существует.<br><br>
+        Здесь вы можете использовать обратную косую черту, то есть: «<span class="highlighted_text">cd Raspberry\ Pi</span>».
+    </div>
+
+    <div>
+        Чтобы поднятся на уровень выше, вы можете набрать «<span class="highlighted_text">cd ..</span>».
+        Вызов с двумя точками возвращает на уровень вверх относительно текущего каталога. <br><br>
+        Вызов с тире «<span class="highlighted_text">cd – </span>» возвращает к предыдущему каталогу.<br><br>
+        Создайте каталог «<span class="highlighted_text">for_cd </span>» через команду <span class="highlighted_text">mkdir</span>.
+    </div>
+
+    <div>
+        Попробуйте перейти в этот каталог:<br><br>
+        <span class="code_text">cd for_cd</span><br><br>
+        С помощью команды <span class="highlighted_text">pwd </span> проверьте, удалось ли вам поменять местоположение.<br><br>
+        Для удобства вы можете вернуться обратно к себе вв папку с помощью команды <span class="highlighted_text">cd ..</span>
+    </div>
+
+    <div>
+        <h2><span class="code_text">#zcat / zless / zmore</span></h2>
+        Это утилиты для просмотра сжатых файлов. <br><br>
+        С помощью <span class="highlighted_text">zcat</span> можно найти и увидеть список сжатых файлов<br><br>
+        <span class="highlighted_text">zless</span> выводит их списком постранично с возможностью листать вперёд и назад
+        <span class="highlighted_text">zmore</span> — только вперёд.<br><br>
+    </div>
+
+    <div>
+        Пока что у вас нет сжатых файлов, но мы уверены, что в будущем вы с ними справитесь.
+    </div>
+
+    <div>
+        <h2><span class="code_text">#;</span></h2>
+        Это, конечно, не команда, но в данном уроке было бы полезно узнать о таком операторе.
+        Точка с запятой — ещё один оператор для последовательного запуска нескольких команд в одной строке.
+        Если нужно, чтобы команды выполнялись параллельно, используйте оператор так: <span class="highlighted_text">(команда_№1 &); (команда_№2 &); (команда_№3 &)</span>
+    </div>
+
+    <div>
+        Попробуйте создать файл, заполнить и вывести его:<br><br>
+        <span class="code_text">(touch file1.txt &); (echo good >> file1.txt &); (cat file1.txt &);</span><br><br>
+    </div>
+    <div>
+        <form  method = 'POST' id="finish_lessons">
+            {%csrf_token%}
+            <input type = submit class="finish_lessons_button_style" name="hh" value="Закончить урок">
+        </form>
+    </div>
+</div>
+
+
+
+{%endblock%}

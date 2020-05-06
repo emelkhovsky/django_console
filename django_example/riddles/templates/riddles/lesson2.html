@@ -1,0 +1,212 @@
+{%include "riddles/base_for_lessons.html"%}
+
+
+{%block body%}
+<div class="lesson_head">Lesson 2 - File control</div>
+<div class="lesson">
+    <div>
+        На этом уроке мы с вами познакомимся с командами Linux для <span class="highlighted_text">управления файлами</span><br>
+        <h2><span class="code_text">#pwd</span></h2>
+        Давайте узнаем, в каком каталоге мы находимся!
+        Для этого используйте команду <span class="code_text">pwd</span>.<br><br>
+        Изначально вы находитесь в каталоге c именем вашего логина. На протяжении всех уроков вы будете работать в этой папке, не выходя за ее пределы.
+
+    </div>
+    <div>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">pwd</span><br><br>
+        После ввода команды вы увидите ответ консоли в таком виде:<br><br>
+        <span class="code_text">root/ваш_логин/</span><br><br>
+        root - это каталог, в котором находятся каталоги всех пользователей. В рамках данных уроков вы не сможете покинуть свою папку,
+        перейти в папку root, папки других пользователей и др.
+    </div>
+    <div>
+        <h2><span class="code_text">#mkdir</span></h2>
+        Используя эту команду, вы можете создать папку или каталог.
+        Если вы хотите создать пустой каталог «name», вы можете ввести «<span class="highlighted_text">mkdir name</span>».<br><br>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">mkdir name</span><br><br>
+        Если вы не получили сообщение об ошибке, все в порядке, папка была успещно создана.
+    </div>
+    <div>
+        <h2><span class="code_text">#ls</span></h2>
+        Давайте проверим, создан ли у вас новый каталог name, используя команду <span class="highlighted_text">ls</span>.<br>
+        <span class="highlighted_text">ls</span> - утилита для просмотра содержимого каталогов.
+        Используйте эту команду, чтобы узнать, какие файлы расположены в каталоге, в котором вы находитесь
+        (сейчас вы находитесь в каталоге ваш_логин)<br>
+    </div>
+    <div>
+        Если указать путь, то вы увидите содержимое конечного каталога.<br><br>
+        Вы можете увидеть все скрытые файлы, используя команду «<span class="highlighted_text">ls -a</span>».<br><br>
+        С помощью команды  «<span class="highlighted_text">ls -l</span>» вы сможете увидеть вывод в виде списка с более подробной информацией.
+        Команда «<span class="highlighted_text">ll</span>» заменяет команду «<span class="highlighted_text">ls -l</span>», но может работать не на всех дистрибутивах Linux.
+    </div>
+    <div>
+        Введите:<br><br>
+        <span class="code_text">ls -l</span><br><br> чтобы проверить, что ваш каталог создан.
+        Если все правиьно, то вы увидите, что появилась новая строчка с названием «<span class="highlighted_text">name</span>», это и есть наш каталог.
+    </div>
+    <div>
+        <h2><span class="code_text">#touch</span></h2>
+        С помощью этой команды вы можете создать новый файл в каталоге.
+        Если он еще не существует, он создаст новый пустой.
+        Если файл с таким именем уже существует, он обновит временные метки файла.<br><br>
+        Введите:<br><br>
+        <span class="code_text">touch filename.txt</span><br><br>
+    </div>
+
+    <div>
+        Мы можем проверить, что файл создан с помощью уже знакомой команды - <br><br><span class="code_text">ls</span><br><br>
+        Если в списке файлов, вы нашли файл с именем <span class="highlighted_text">filename</span>, то все сделано правильно.
+    </div>
+
+    <div>
+        <h2><span class="code_text">#echo</span></h2>
+        Это простая команда, которая просто выводит свои аргументы на дисплей.
+        Если ввести просто <span class="highlighted_text">echo some text</span>, то на экране вы увидите текстовое сообщение «<span class="highlighted_text">some text</span>»<br><br>
+        Опция <span class="highlighted_text">-e</span> с echo позволяет вам интерпретировать escape-символы:<br>
+        <span class="highlighted_text">/c</span> - удалить перевод строки;<br>
+        <span class="highlighted_text">/t</span> - горизонтальная табуляция;<br>
+    </div>
+
+    <div>
+        <span class="highlighted_text">/v</span> - вертикальная табуляция;<br>
+        <span class="highlighted_text">/b</span> - удалить предыдущий символ;<br>
+        <span class="highlighted_text">/n</span> - перевод строки;<br>
+        <span class="highlighted_text">/r</span> - символ возврата каретки в начало строки;
+        Попробуйте ввести:<br><br>
+        <span class="code_text">echo –е "Some\n text"</span><br><br>
+        Если все прошло удачно, то в консоли вы увидите текст!
+    </div>
+
+    <div>
+        Но самое актуальное для нас это то, что с помощью этой команды можно записать любое
+        текстовое сообщение в файл, для этого необходимо ввести: <span class="highlighted_text">echo «текст сообщения» >> «файл»</span>
+        Например, запишем слово «text» в файл «filename.txt»<br><br>
+        Для этого вводим: <br><br>
+        <span class="code_text">echo text >> filename.txt</span>
+    </div>
+
+
+    <div>
+        <h2><span class="code_text">#cat</span></h2>
+        Используйте команду <span class="highlighted_text">cat</span> для отображения содержимого файла.
+        Когда команда используется с одним текстовым файлом (<span class="highlighted_text">cat путь_к_файлу</span>), она отображает его содержимое в окне терминала.<br><br>
+        Если указать более одного файла(<span class="highlighted_text">cat путь_к_файлу_1 путь_к_файлу_2</span>), она склеит их.
+    </div>
+
+    <div>
+        Если ввести (<span class="highlighted_text">cat путь_к_файлу_1> новый_файл</span>), она объединит содержимое указанных файлов в новый файл.
+        Если файл пустой, то команда ничего не выведет.
+        Попробуйте ввести:<br><br>
+        <span class="code_text">cat filename.txt</span><br><br>
+        Если все прошло удачно, то ниже вы увидите текст файла!
+    </div>
+
+    <div>
+        <h2><span class="code_text">#cp</span></h2>
+        Используйте команду <span class="highlighted_text">cp</span> для копирования файла.
+        Он принимает два аргумента: первый — это местоположение файла, который нужно скопировать, второй - куда копировать.<br>
+        Место назначения копирования может быть файлом или директорией.
+
+    </div>
+
+    <div>
+        Попробуйте создать файл <span class="highlighted_text">filename2.txt</span> с помощью команды <span class="highlighted_text">touch</span>.
+        Например, нужно скопировать файл file.txt в файл <span class="highlighted_text">filename2.txt</span>. <br><br>
+        Для этого вводим:<br><br>
+        <span class="code_text">cp filename.txt filename2.txt</span><br><br>
+        Проверьте содержимое файла <span class="highlighted_text">filename2.txt</span> с помощью команды <span class="highlighted_text">cat</span>.
+        Если все верно, то в нем будет то же самое, что и в файле <span class="highlighted_text">filename.txt</span>.
+    </div>
+
+    <div>
+        Чтобы скопировать файл в директорию, можно воспользоваться командой <span class="highlighted_text">cp имя_файла имя_директории/</span>
+    </div>
+
+     <div>
+        <h2><span class="code_text">#mv</span></h2>
+        Используйте команду <span class="highlighted_text">mv</span>, чтобы переименовывать файлы.
+        Он принимает два аргумента: имя файла и новое имя файла.
+        Например, давайте переименуем файл «<span class="highlighted_text">filename.txt</span>» в «<span class="highlighted_text">newfilename.txt</span>»<br><br>
+        Для этого попробуйте ввести:<br><br>
+        <span class="code_text">mv filename.txt newfilename.txt</span><br><br>
+    </div>
+
+    <div>
+        Вы можете проверить поменялось ли имя файла с помощью команды <span class="highlighted_text">ls</span>.
+    </div>
+
+    <div>
+        <h2><span class="code_text">#file</span></h2>
+        Используя эту команду, можно посмотреть, к какому типу относится файл.
+        В Linux файлы не обязаны всегда иметь расширения для того, чтобы с ними работать.
+        Поэтому пользователю иногда трудно определить, что за файл перед ним. Эта маленькая утилита решает проблему.<br><br>
+        Синтаксис: <span class="highlighted_text">file [option] [filename]</span>
+    </div>
+
+    <div>
+        Можно использовать параметр <span class="highlighted_text">-b</span>, который нужен для отображения только типа файла в кратком режиме.<br><br>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">file -b filename.txt</span><br><br>
+        Если все правильно, то вы увидите вывод «<span class="highlighted_text">ASCII text</span>»
+    </div>
+
+    <div>
+        <h2><span class="code_text">#rm</span></h2>
+        Используйте команду <span class="highlighted_text">rm</span> для удаления файлов и каталогов.
+        Аккуратнее, <span class="highlighted_text">rm</span> удаляет файлы не в корзину, из которой потом всё можно будет восстановить, а полностью стирает.<br><br>
+        Действия оператора rm необратимы.
+    </div>
+
+    <div>
+        Команда  «<span class="highlighted_text">rm -r имя_каталога</span>» используется, чтобы удалить только каталог.<br><br>
+        Чтобы удалить один файл, используйте команду <span class="highlighted_text">rm</span>, за которой следует имя файла: «<span class="highlighted_text">rm имя_файла</span>»<br><br>
+        Если файл защищен от записи, вам будет предложено подтвердить ее(<span class="highlighted_text">rm: remove write-protected regular empty file 'имя_файла'?</span>).
+        Чтобы удалить файл, введите <span class="highlighted_text">y</span>(yes) или <span class="highlighted_text">n</span>(no) и нажмите кнопку Отправить.
+    </div>
+
+    <div>
+        В противном случае, если файл не защищен от записи, он будет удален без запроса.<br><br>
+        Чтобы удалить сразу несколько файлов, используйте команду <span class="highlighted_text">rm</span>, за которой следуют имена файлов, разделенные пробелом:
+        <span class="highlighted_text">rm имя_файла1 имя_файла2 имя_файла3</span><br><br>
+        Вы также можете использовать подстановочный знак ( *) и регулярные выражения для соответствия нескольким файлам.
+    </div>
+
+    <div>
+        Например, чтобы удалить все файлы с расширением .pdf в текущем каталоге, используйте следующую команду: <span class="highlighted_text">rm *.pdf</span><br><br>
+    </div>
+
+    <div>
+        Как удалять каталоги?<br><br>
+        Для удаления пустого каталога используйте опцию <span class="highlighted_text">-d</span>. <span class="highlighted_text">rm -d имя_каталога</span>.<br><br>
+        Чтобы удалить непустые каталоги и все файлы внутри них, используйте параметр <span class="highlighted_text">-r</span>: <span class="highlighted_text">rm -r dirname</span>.
+        Если каталог или файл в каталоге защищены от записи, вам будет предложено подтвердить удаление.
+    </div>
+
+    <div>
+        Чтобы удалить непустые каталоги и все файлы без запроса, используйте параметры <span class="highlighted_text">-r</span>  и  <span class="highlighted_text">-f</span>:
+        <span class="highlighted_text">rm -rf имя_каталога</span><br><br>
+        Чтобы удалить сразу несколько каталогов, используйте команду <span class="highlighted_text">rm</span>, за которой следуют имена каталогов,
+        разделенные пробелом: <span class="highlighted_text">rm -r имя_каталога1 имя_каталога2 имя_каталога3</span>
+    </div>
+
+    <div>
+        Давайте создадим каталог «<span class="highlighted_text">dir_for_rm</span>» с помощью команды mkdir: <span class="highlighted_text">mkdir dir_for_rm</span>.
+        Вы можете проверить наличие файла с помощью команды <span class="highlighted_text">ls -l</span>.<br><br>
+        Теперь давайте попробуем удалить каталог:<br><br>
+        <span class="code_text">rm -r dir_for_rm</span><br><br>
+        С помощью команды <span class="highlighted_text">ls -l</span> убедитесь, что его нет в списке файлов и каталогов.
+    </div>
+    <div>
+        <form  method = 'POST' id="finish_lessons">
+            {%csrf_token%}
+            <input type = submit class="finish_lessons_button_style" name="hh" value="Закончить урок">
+        </form>
+    </div>
+
+</div>
+
+
+
+{%endblock%}

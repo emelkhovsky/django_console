@@ -1,16 +1,16 @@
-{%extends "riddles/base.html"%}
+{%extends "riddles/navbar.html"%}
 
 {%block body%}
-<div id = "reg_form_block">
+<img src="../static/images/fon_block_registration.png" class="reg_form_block" alt="">
     <div id = "reg_head">Register</div>
     <form action = '/reg/' method = 'POST'>
-        {%csrf_token%}
         <div id = "reg_form">
+            {%csrf_token%}
             <p>{{regform.login}}</p>
             <p>{{regform.password}}</p>
             <p>{{regform.email}}</p>
         </div>
         <input type = submit value = 'Register' id = "reg_submit" class = "fonts_fix">
     </form>
-</div>
+
 {%endblock%}

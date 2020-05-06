@@ -1,0 +1,156 @@
+{%include "riddles/base_for_lessons.html"%}
+
+
+{%block body%}
+<div class="lesson_head">Lesson 4 - Processes,<br> users, network</div>
+<div class="lesson">
+    <div>
+        В этом уроке мы познакомим вас сразу с тремя видами команд: команды процессов, пользователей, сети.
+        Для начала рассмотрим команды Linux для управления процессами:
+        <h2><span class="code_text">#ps/grep</span></h2>
+        Команда <span class="highlighted_text">ps</span> выдает информацию об активных процессах.
+        Выводятся идентификатор процесса, идентификатор терминала, истраченное к данному моменту время ЦП и имя команды.
+    </div>
+    <div>
+        Используя опцию «<span class="highlighted_text">ps -e</span>», можно увидеть информацию об определённом процессе.<br><br>
+        Команда «<span class="highlighted_text">ps – aux</span>» выводит полную информацию о процессах.<br><br>
+        Команда <span class="highlighted_text">grep</span> используется, чтобы найти конкретный процесс.
+        Например, если ввести <span class="highlighted_text">grep file</span>, то команда grep выполнит поиск по результатам
+        команды <span class="highlighted_text">ps</span>,  и на экран будут выведены только те строки, которые содержат слово <span class="highlighted_text">file</span>.<br><br>
+    </div>
+    <div>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">ps</span><br><br>
+        Вы увидите информацию об активных процессах.
+    </div>
+    <div>
+        <h2><span class="code_text">#kill/xkill/<br>pkill/killall</span></h2>
+        Эти команды служат для завершения процессов. Основное различие между ними — способ идентификации.<br><br>
+        <span class="highlighted_text">kill</span> — прекращает процесс(посылает сигнал процессу), находя его через идентификатор процесса (<span class="highlighted_text">PID</span>).
+    </div>
+
+    <div>
+        Если вам нужно завершить операцию «<span class="highlighted_text">process</span>», вам необходимо ввести <span class="highlighted_text">kill process</span>.<br><br>
+        <span class="highlighted_text">xkill</span> — графический способ. После ввода команды курсор превращается в крестик, который при клике на окно открытого процесса, останавливает его.<br><br>
+        <span class="highlighted_text">pkill</span> — завершает конкретный процесс, находя его по имени.
+    </div>
+
+    <div>
+        <span class="highlighted_text">killall</span> — прекращает все процессы с указанным именем.<br><br>
+        <span class="highlighted_text">kill -l</span> — выводит список сигналов и и числовые значения.<br><br>
+        С помощью сигналов мы можем посылать сигналы процессам с определенным <span class="highlighted_text">PID</span>.
+        Например, чтобы принудительно завершить процесс можно использовать команду <span class="highlighted_text">kill -KILL PID</span>.
+        Эту же команду можно заменит на <span class="highlighted_text">kill -9 PID</span>, т.к. числовое значение сигнала
+        <span class="highlighted_text">KILL</span> равно <span class="highlighted_text">9</span>.<br><br>
+    </div>
+    <div>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">kill -l</span><br><br>
+        Вы увидите список сигналов.
+    </div>
+    <div>
+        <h2><span class="code_text">#top</span></h2>
+        Эта команда, вызывающая консольную программу мониторинга активных процессов в системе.<br><br>
+        Информация отображается в виде таблицы со списком процессов в реальном времени.<br><br>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">top</span><br><br>
+    </div>
+
+    <div>
+        <h2><span class="code_text">#time</span></h2>
+        Команда-секундомер, позволяющая подсчитать время исполнения процесса.
+        Результатом измерения станет блок данных с тремя важнейшими параметрами:<br><br>
+        <span class="highlighted_text">real</span> — общее время исполнения;<br><br>
+        <span class="highlighted_text">user</span> — сколько времени пользователь занял у <span class="highlighted_text">CPU</span>;
+    </div>
+
+    <div>
+        <span class="highlighted_text">sys</span> — сколько времени CPU было потрачено системой.<br><br>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">time ls -l</span><br><br>
+        В выводе вы увидите значения этих трех параметров.
+    </div>
+
+    <div>
+        Рассмотрим команды для управления пользователями. В этих уроках ими запрещено пользоваться в рамках этой консоли,
+        но в своих личных проектах вы запросто сможете ими воспользоваться:)
+        <h2><span class="code_text">#useradd/userdel/<br>usermod</span></h2>
+        Это команды управления учётными записями пользователей.
+    </div>
+
+    <div>
+        «<span class="highlighted_text">useradd имя_пользователя</span>» - создание нового пользователя;<br><br>
+        «<span class="highlighted_text">userdel имя_пользователя</span>» - удаляет учётную запись и файлы пользователя;<br><br>
+        «<span class="highlighted_text">usermod [параметры] имя_пользователя</span>» изменяет системные файлы учётных записей согласно переданным в командной строке параметрам;
+    </div>
+
+    <div>
+        <h2><span class="code_text">#passwd</span></h2>
+        Обычный пользователь может поменять только пароль, связанный с его именем, введя <span class="highlighted_text">passwd имя_пользователя</span>.<br><br>
+        В режиме суперпользователя можно сбросить все пользовательские пароли в системе.
+    </div>
+
+    <div>
+        И последний вид команд, который мы бы хотели вам показать в этом уроке – команды для управления сетью:
+        <h2><span class="code_text">#ip</span></h2>
+        Утилита выводит полный список параметров для настройки работы с сетью. Среди них:<br><br>
+        <span class="highlighted_text">link</span> — сетевое устройство;<br><br>
+        <span class="highlighted_text">address</span> — IP-адрес сетевого устройства;<br><br>
+    </div>
+    <div>
+        <span class="highlighted_text">monitor</span> — мониторинг устройства;<br><br>
+        <span class="highlighted_text">route</span> — маршрутизация;<br><br>
+        <span class="highlighted_text">tunnel</span> — туннелированные;<br><br>
+        Синтаксис: <span class="highlighted_text">ip [опции] объект команда [параметры]</span><br><br>
+        <span class="highlighted_text">Опции</span> - это глобальные настройки, которые сказываются на работе всей утилиты независимо от других аргументов;<br><br>
+    </div>
+    <div>
+        <span class="highlighted_text">Объект</span> - объект или устройство, с которым будем работать или о котором будем узнавать информацию;<br><br>
+        <span class="highlighted_text">Команды</span> - какое-либо действие с объектом;<br><br>
+        Команд с <span class="highlighted_text">ip</span> очень много, одна из них - <span class="highlighted_text">ip address</span>.
+        <span class="highlighted_text">ip address show</span> - показать все ip адреса и их интерфейсы.<br><br>
+    </div>
+    <div>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">ip address show</span><br><br>
+        Вы сможете увидеть все ip адреса и их интерфейсы.
+    </div>
+
+    <div>
+        <h2><span class="code_text">#ping</span></h2>
+        Эта команда проверяет наличие и качество интернет-подключения. В качестве адреса узла можно передавать как ip адрес, так и доменное имя.<br><br>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">ping google.com</span><br><br>
+    </div>
+    <div>
+        После ввода, если есть подключение, то вы увидите надпись, похожую на
+        «<span class="highlighted_text">64 bytes from lg-in-f138.1e100.net (64.233.165.138): icmp_seq=1 ttl=45 time=13.1 ms</span>»
+    </div>
+    <div>
+        <h2><span class="code_text">#nethogs</span></h2>
+        Утилита мониторинга сетевой активности устройств в системе.
+        Если у вас медленный интернет, то вам, наверное, было бы интересно знать,
+        сколько трафика использует какая-либо программа в Linux или какая программа
+        потребляет всю скорость. Как раз с помощью этой утилиты можно это узнать.
+
+    </div>
+    <div>
+        <span class="highlighted_text">Объект</span> - объект или устройство, с которым будем работать или о котором будем узнавать информацию;<br><br>
+        <span class="highlighted_text">Команды</span> - какое-либо действие с объектом;<br><br>
+        Команд с <span class="highlighted_text">ip</span> очень много, одна из них - <span class="highlighted_text">ip address</span>.
+        <span class="highlighted_text">ip address show</span> - показать все ip адреса и их интерфейсы.<br><br>
+    </div>
+    <div>
+        Попробуйте ввести:<br><br>
+        <span class="code_text">ip address show</span><br><br>
+        Вы сможете увидеть все ip адреса и их интерфейсы.
+    </div>
+    <div>
+        <form  method = 'POST' id="finish_lessons">
+            {%csrf_token%}
+            <input type = submit class="finish_lessons_button_style" name="hh" value="Закончить урок">
+        </form>
+    </div>
+</div>
+
+{%endblock%}
