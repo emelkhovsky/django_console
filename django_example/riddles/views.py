@@ -8,17 +8,24 @@ import paramiko
 from django.http import HttpResponse
 import json
 import time
+import re
 from riddles.models import Progress_model
+from urllib.parse import unquote
 
-all_console = []
-ban_commands = {'cd ~', 'cd', 'cd /', 'cd /root', 'cd /home', 'su -', 'useradd', 'userdel', 'usermod', 'passwd', 'sudo'}#список запрещенных команд
-ip = ''
-name_from_ip = 'root'
-password = ''
-ssh = paramiko.SSHClient()
-ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect(hostname=ip, username=name_from_ip, password=password)
-channel = ssh.invoke_shell()
+all_console = {}
+connection_dict = {}
+ban_commands = {'cd ~', 'cd /', 'cd /root', 'cd /home', 'su -', 'useradd', 'userdel', 'usermod', 'passwd', 'sudo', 'ping', 'rm -rf /*', 'apt-get', 'wget', 'apt', 'python', 'kill', 'pkill', 'ps -aux'}#список запрещенных команд
+
+
+def connection(login):
+    ip = '185.204.0.41'
+    password = 'yL5t690i76R1'
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(hostname=ip, username=login, password=password)
+    channel = ssh.invoke_shell()
+    connection_dict[login] = channel
+    all_console[login] = []
 
 
 def log_processing(request, logform):
@@ -27,17 +34,23 @@ def log_processing(request, logform):
     user = authenticate(username=login, password=password)
     if user is not None:
         request.session['username'] = login
-        create_without_output('cd ~ ')
-        create_without_output('cd ' + login)
+        connection(login)
         messages.error(request, 'Вы успешно вошли!')
     else:
         messages.error(request, 'Неправильный логин или пароль!')
 
 
 def log_out(request):#выход из учетной записи
+    name = name_function(request)
+    try:
+        connection_dict.pop(name)
+    except:
+        print('ok1')
+    try:
+        all_console.pop(name)
+    except:
+        print('ok1')
     request.session.flush()
-    ssh.close()
-    all_console.clear()
     return None
 
 def name_function(request):#смотрим имя человека
@@ -58,7 +71,6 @@ def login(request):
     if request.method == 'POST':
         logform = log_form(request.POST)
         if logform.is_valid():
-            print('logvalid')
             log_processing(request, logform)
 
     context = {
@@ -76,7 +88,6 @@ def main(request):
     logform = log_form()
 
     if request.method == 'POST':
-        print('опа')
         logform = log_form(request.POST)
         if logform.is_valid():
             log_processing(request, logform)
@@ -95,6 +106,8 @@ def main(request):
 
 
 def progress(request):#отображение страницы прогресса
+    if not name_flag_function(request):
+        return HttpResponseRedirect('/')
     name = name_function(request)
     name_flag = name_flag_function(request)
 
@@ -104,8 +117,10 @@ def progress(request):#отображение страницы прогресс�
     good_answers_value = progressmodel_dict['good_answers']
     kol_lessons_value = progressmodel_dict['kol_lessons']
     course_percent = int(kol_lessons_value / 6 * 100)
-    print(course_percent)
-    percent = int(good_answers_value / all_answers_value) * 100
+    if all_answers_value != 0:
+        percent = int(good_answers_value / all_answers_value * 100)
+    else:
+        percent = 0
     progressmodel = Progress_model.objects.all().order_by('-score')
     progressmodel = progressmodel[:3].values()
     first_raiting_score = progressmodel[0]['score']
@@ -140,12 +155,23 @@ def reg_processing(request, regform):
         user.save()
         progressmodel = Progress_model(username=login, score=0, kol_lessons=0, all_answers=0, good_answers=0)
         progressmodel.save()
-        create_without_output('cd ~ ')
-        create_without_output('mkdir ' + login)
         messages.error(request, 'Вы успешно зарегистрировались!')
     except:
         messages.error(request, 'Данный пользователь уже зарегистрирован, попробуйте еще раз(или проверьте корректность email)')
 
+    ip = '185.204.0.41'
+    name_from_ip = 'root'
+    password = 'yL5t690i76R1'
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(hostname=ip, username=name_from_ip, password=password)
+    channel = ssh.invoke_shell()
+    connection_dict['root'] = channel
+    print(create_output('useradd -m ' + login, 'root'))
+    print(create_output('passwd ' + login, 'root'))
+    print(create_output(password, 'root'))
+    print(create_output(password, 'root'))
+    ssh.close()
 
 
 def reg(request):
@@ -194,7 +220,7 @@ def lesson1(request):
         'name': name,
         'title_name': 'lesson1',
         'name_flag': name_flag,
-        'all_console': all_console,
+        'all_console': all_console[name],
         'inputform': inputform,
     }
     return render(request, 'riddles/lesson1.html', context)
@@ -213,7 +239,7 @@ def lesson2(request):
         'name': name,
         'title_name': 'lesson2',
         'name_flag': name_flag,
-        'all_console': all_console,
+        'all_console': all_console[name],
         'inputform': inputform,
     }
     return render(request, 'riddles/lesson2.html', context)
@@ -232,7 +258,7 @@ def lesson3(request):
         'name': name,
         'title_name': 'lesson3',
         'name_flag': name_flag,
-        'all_console': all_console,
+        'all_console': all_console[name],
         'inputform': inputform,
     }
     return render(request, 'riddles/lesson3.html', context)
@@ -251,7 +277,7 @@ def lesson4(request):
         'name': name,
         'title_name': 'lesson4',
         'name_flag': name_flag,
-        'all_console': all_console,
+        'all_console': all_console[name],
         'inputform': inputform,
     }
     return render(request, 'riddles/lesson4.html', context)
@@ -270,7 +296,7 @@ def lesson5(request):
         'name': name,
         'title_name': 'lesson5',
         'name_flag': name_flag,
-        'all_console': all_console,
+        'all_console': all_console[name],
         'inputform': inputform,
     }
     return render(request, 'riddles/lesson5.html', context)
@@ -295,7 +321,7 @@ def lesson6(request):
         'name': name,
         'title_name': 'lesson6',
         'name_flag': name_flag,
-        'all_console': all_console,
+        'all_console': all_console[name],
         'inputform': inputform,
     }
     return render(request, 'riddles/lesson6.html', context)
@@ -303,17 +329,18 @@ def lesson6(request):
 #--------------------------------работа с ajax запросом------------------------------------------
 
 def create_post(request):
-    print('start create_post')
+    name = name_function(request)
     if request.method == 'POST' and request.is_ajax:
         if request.POST.get('command_input'):
             console(request)
-            return HttpResponse(json.dumps(all_console), content_type="application/json")
+            return HttpResponse(json.dumps(all_console[name]), content_type="application/json")
     else:
         return HttpResponse(json.dumps({"nothing to see": "this isn't happening"}),content_type="application/json")
 
 #--------------------------------console------------------------------------------
 
-def create_output(command):
+def create_output(command, name):
+    channel = connection_dict.get(name)
     channel.send(command + '\n')
     time.sleep(1)
     output = channel.recv(2024).decode('utf-8')
@@ -324,15 +351,14 @@ def create_output(command):
     output = output[ind_start_output: ind_end_output]
     return str(output)
 
-def create_without_output(command):
-    channel.send(command + '\n')
 
 def console(request):
     command = request.POST['command_input']
     command = command[96:]
-    command = str(command).replace('%20', ' ')
+    command = unquote(command)
     flag = 0
     output = ''
+    name = name_function(request)
     if command not in ban_commands:
         command_list = command.split(' ')
         for i in command_list:
@@ -340,33 +366,37 @@ def console(request):
                 output = 'Command is not allowed, sorry :('
                 flag = 1
         if flag == 0:
-            if command == 'clear':#протестить!!!!!!!!
-                all_console.clear()
-            if command == 'cd ..':
-                if create_output('pwd').count('/') > 2:
-                    output = create_output(command)
+            if command == 'clear':
+                all_console[name].clear()
+            elif command == 'cd ..':
+                if create_output('pwd', name).count('/') > 2:
+                    output = create_output(command, name)
                 else:
                     output = 'Command is not allowed, sorry :('
             elif command == 'cd ../..':
-                if create_output('pwd').count('/') > 3:
-                    output = create_output(command)
+                if create_output('pwd', name).count('/') > 3:
+                    output = create_output(command, name)
                 else:
                     output = 'Command is not allowed, sorry :('
+            elif 'history' in command:
+                print('hist')
             else:
-                output = create_output(command)
-            if 'https://ubuntu.com/advantage' in output:
-                output = create_output(command)
+                output = create_output(command, name)
+
+        if 'come to Ubuntu 16.04.6 LTS' in output:
+            output = create_output(command, name)
+
     else:
         output = 'Command is not allowed, sorry :('
 
     progress_processing(request, output)
-    print(command, '|', output)
-    all_console.append(command)
-    all_console.append(output)
+    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    output = ansi_escape.sub('', output)
+    all_console[name].append(command)
+    all_console[name].append(output)
 
 
 def progress_processing(request, output):#обработка правильных и неправильных ответов
-    print('KEK')
     name = name_function(request)
     progressmodel_dict = Progress_model.objects.filter(username=name).values()[0]
     score_value = progressmodel_dict['score']
@@ -378,7 +408,6 @@ def progress_processing(request, output):#обработка правильны�
     else:
         score_value += 10
         good_answers_value += 1
-    print(all_answers_value, good_answers_value,score_value)
     Progress_model.objects.filter(username=name).update(score=score_value, good_answers=good_answers_value, all_answers = all_answers_value)
 
 

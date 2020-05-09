@@ -53,9 +53,7 @@ window.onload = function(){
 }
 
 function create_post() {
-        console.log("create post is working!");
         var str = $("#console_form").serialize();
-        console.log(str);
         $.ajax({
             url: "create_post/",
             type: "POST",
@@ -77,7 +75,6 @@ function create_post() {
 
     $("#console_form").on("submit", function (event) {
         event.preventDefault();
-        console.log("form submitted!");
         create_post();
     })
 </script>

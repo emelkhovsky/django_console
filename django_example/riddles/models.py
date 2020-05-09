@@ -2,10 +2,6 @@ from django.db import models
 
 # Create your models here.
 
-
-class InputCommandsModel(models.Model):
-    input_line = models.CharField(max_length=50)
-
 class Progress_model(models.Model):
     username = models.CharField(max_length= 50, blank=True)
     score = models.IntegerField()

@@ -1,7 +1,6 @@
 {%extends "riddles/navbar.html"%}
 
 {%block body%}
-    {%if name_flag is None%}
         <img src="../static/images/fon_block_log_in.png" class="log_in_form_block" alt="">
             <div id = "log_head">Log in</div>
             <form action = '/login/' method = 'POST'>
@@ -12,6 +11,4 @@
                 </div>
                 <input type = submit value = 'Log in' id = "login_submit" class = "fonts_fix">
             </form>
-
-    {%endif%}
 {%endblock%}
