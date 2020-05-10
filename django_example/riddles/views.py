@@ -19,7 +19,7 @@ ban_commands = {'cd ~', 'cd /', 'cd /root', 'cd /home', 'su -', 'useradd', 'user
 
 def connection(login):
     ip = '185.204.0.41'
-    password = 'yL5t690i76R1'
+    password = ''
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(hostname=ip, username=login, password=password)
@@ -161,7 +161,7 @@ def reg_processing(request, regform):
 
     ip = '185.204.0.41'
     name_from_ip = 'root'
-    password = 'yL5t690i76R1'
+    password = ''
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(hostname=ip, username=name_from_ip, password=password)
